@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<layout version="0.1.0">
+    <margins_adminhtml_marginsbackend_index>
+        <reference name="content">
+            <block type="margins/adminhtml_marginsbackend" name="marginsbackend"
+                   template="margins/marginsbackend.phtml"/>
+        </reference>
+    </margins_adminhtml_marginsbackend_index>
+</layout>
