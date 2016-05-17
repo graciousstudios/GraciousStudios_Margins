@@ -77,6 +77,7 @@ class GraciousStudios_Margins_Block_Adminhtml_Sales_Margins_Grid extends Mage_Ad
         $_collection->getSelect()
                     ->columns($sCustomColumns)
         ;
+        Mage::log('sql = ' . $_collection->getSelect()->__toString(), null, 'gracious.log');
         $this->setCollection($_collection);
         parent::_prepareCollection();
         return $this;
