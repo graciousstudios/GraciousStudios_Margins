@@ -104,16 +104,16 @@
             </updates>
         </layout>
     </adminhtml>
-    <crontab>
-        <jobs>
-            <margins_generate>
-                <schedule>
-                    <cron_expr>0 * * * *</cron_expr>
-                </schedule>
-                <run>
-                    <model>margins/margins::generate</model>
-                </run>
-            </margins_generate>
-        </jobs>
-    </crontab>
+    <!--<crontab>-->
+        <!--<jobs>-->
+            <!--<margins_generate>-->
+                <!--<schedule>-->
+                    <!--<cron_expr>0 * * * *</cron_expr>-->
+                <!--</schedule>-->
+                <!--<run>-->
+                    <!--<model>margins/margins::generate</model>-->
+                <!--</run>-->
+            <!--</margins_generate>-->
+        <!--</jobs>-->
+    <!--</crontab>-->
 </config> 
