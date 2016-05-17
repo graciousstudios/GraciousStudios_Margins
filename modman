@@ -1,4 +1,4 @@
-app/code/local/GraciousStudios/Monthlyreports               app/code/local/GraciousStudios/Monthlyreports
-app/etc/modules/GraciousStudios_Monthlyreports.xml          app/etc/modules/GraciousStudios_Monthlyreports.xml
+app/code/local/GraciousStudios/Margins                      app/code/local/GraciousStudios/Margins
+app/etc/modules/GraciousStudios_Margins.xml                 app/etc/modules/GraciousStudios_Margins.xml
 app/design/adminhtml/default/default/layout/margins.xml     app/design/adminhtml/default/default/layout/margins.xml
 app/design/adminhtml/default/default/template/margins       app/design/adminhtml/default/default/template/margins
