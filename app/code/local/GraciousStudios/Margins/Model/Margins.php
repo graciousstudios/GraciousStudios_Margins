@@ -12,12 +12,6 @@ class GraciousStudios_Margins_Model_Margins extends Mage_Core_Model_Abstract
     protected $salePriceExclTax = 'SUM(main_table.row_total)';
     protected $salePriceInclTax = 'SUM(main_table.row_total_incl_tax)';
 
-    protected $attributesToSet = [
-        'margins_revenue_excl_tax',
-        'margins_revenue_incl_tax',
-        '',
-    ];
-
     protected function _construct()
     {
         $this->_init('margins/margins');
@@ -28,8 +22,6 @@ class GraciousStudios_Margins_Model_Margins extends Mage_Core_Model_Abstract
      */
     public function generate()
     {
-        Mage::log('-----------------------------------', null, 'gracious.log');
-        Mage::log(__METHOD__, null, 'gracious.log');
         $startTimestamp = mktime(0, 0, 0, date('m') - 1, 1, date('Y'));
         $endTimestamp = mktime(0, 0, 0, date('m'), 1, date('Y'));
         $this->startDate = date('Y-m-d H:i:s');
@@ -98,6 +90,7 @@ class GraciousStudios_Margins_Model_Margins extends Mage_Core_Model_Abstract
         $sCustomColumns = implode(',', $aCustomColumns);
         $_collection->getSelect()->columns($sCustomColumns);
         $_collection->getSelect()->group('product_id');
+        Mage::log('sql = ' . $_collection->getSelect()->__toString(), null, 'gracious.log');
         $_item = $_collection->getFirstItem();
         if($_item)  {
             $aReturn = $_item->getData();

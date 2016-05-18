@@ -29,7 +29,6 @@ class GraciousStudios_Margins_Adminhtml_MarginsbackendController extends Mage_Ad
     }
 
     public function refreshAction() {
-        Mage::log(__METHOD__, null, 'gracious.log');
         try{
             $_margin = Mage::getModel('margins/margins')->generate();
             Mage::getSingleton('core/session')->addSuccess('Margins regenerated successfully');

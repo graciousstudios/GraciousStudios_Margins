@@ -10,7 +10,6 @@ class GraciousStudios_Margins_Block_Adminhtml_Sales_Margins_Renderer_ProductTax 
      */
     protected function _getValue(Varien_Object $row)
     {
-        Mage::log(__METHOD__, null, 'gracious.log');
         $data = parent::_getValue($row);
         if (!is_null($data)) {
             $value = round($data * 1, 2) . '%';
