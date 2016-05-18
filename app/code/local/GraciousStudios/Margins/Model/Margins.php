@@ -6,86 +6,104 @@ class GraciousStudios_Margins_Model_Margins extends Mage_Core_Model_Abstract
     protected $startDate;
     protected $endDate;
 
-    protected $avgSalePrice = 'AVG(order_item.price)';
-    protected $totalQty = 'SUM(order_item.qty_ordered)';
-    protected $purchasePrice = 'SUM(order_item.qty_ordered) * `at_margins_purchase_price`.`value`';
-    protected $salePriceExclTax = 'SUM(order_item.row_total)';
-    protected $salePriceInclTax = 'SUM(order_item.row_total_incl_tax)';
-    protected $margin_percentage_excl_tax;
+    protected $avgSalePrice = 'AVG(main_table.price)';
+    protected $totalQty = 'SUM(main_table.qty_ordered)';
+    protected $purchasePrice = 'SUM(main_table.qty_ordered) * `at_margins_purchase_price`.`value`';
+    protected $salePriceExclTax = 'SUM(main_table.row_total)';
+    protected $salePriceInclTax = 'SUM(main_table.row_total_incl_tax)';
 
     protected $attributesToSet = [
         'margins_revenue_excl_tax',
         'margins_revenue_incl_tax',
-        ''
+        '',
     ];
+
+    protected function _construct()
+    {
+        $this->_init('margins/margins');
+    }
 
     /**
      * Generate reports and send email
      */
     public function generate()
     {
+        Mage::log('-----------------------------------', null, 'gracious.log');
         Mage::log(__METHOD__, null, 'gracious.log');
         $startTimestamp = mktime(0, 0, 0, date('m') - 1, 1, date('Y'));
         $endTimestamp = mktime(0, 0, 0, date('m'), 1, date('Y'));
-        $this->startDate = date('Y-m-d H:i:s', $startTimestamp);
-        $this->endDate = date('Y-m-d H:i:s', $endTimestamp);
-        $this->margin_percentage_excl_tax = '100 - ((' . $this->purchasePrice . ' / ' . $this->salePriceExclTax . ') * 100)';
-        $this->test();
-        die;
+        $this->startDate = date('Y-m-d H:i:s');
+        $this->endDate = date('Y-m-d H:i:s');
+        $this->refresh();
     }
 
-    protected function test()
+    protected function refresh()
     {
-        Mage::log(__METHOD__, null, 'gracious.log');
         $_collection = Mage::getModel('catalog/product')
-               ->getCollection()
-               ->addAttributeToSelect(['name', 'margins_purchase_price'], 'inner')
-               ->joinTable(
-                   ['order_item' => 'sales/order_item'],
-                   'product_id = entity_id',
-                   [
-                       'margins_revenue_excl_tax' => $this->salePriceExclTax,
-                       'margins_revenue_incl_tax' => $this->salePriceInclTax,
-                       'margins_total_qty'        => $this->totalQty,
-                       'margins_avg_sale_price'   => $this->avgSalePrice,
-                       'margins_tax_amount'       => 'order_item.tax_amount',
-                   ]
-               )
-               ->groupByAttribute('entity_id', 'order_item.tax_amount')
+                           ->getCollection()
+                           ->addAttributeToSelect(['name', 'margins_purchase_price'], 'inner')
         ;
+        foreach ($_collection as $_item) {
+            $_product = Mage::getModel('catalog/product')
+                            ->load($_item->getId())
+            ;
+            $_margin = Mage::getModel('margins/margins')
+                           ->load($_product->getId(), 'product_id')
+            ;
+            $aMargins = $this->calculateMargins($_product);
+            if (!$_margin->getId()) {
+                $_margin->setData($aMargins);
+                $_margin->setSku($_product->getSku());
+                $_margin->setName($_product->getName());
+                $_margin->setPurchasePrice($_product->getMarginsPurchasePrice());
+                $_margin->setCreatedAt($this->startDate);
+                $_margin->setUpdatedAt($this->startDate);
+            }
+            else {
+                $_id = $_margin->getId();
+                $_margin->setData($aMargins);
+                $_margin->setSku($_product->getSku());
+                $_margin->setName($_product->getName());
+                $_margin->setPurchasePrice($_product->getMarginsPurchasePrice());
+                $_margin->setUpdatedAt($this->startDate);
+                $_margin->setId($_id);
+            }
+            $_margin->save();
+        }
+    }
+
+    /**
+     * @param Mage_Catalog_Model_Product $_product
+     *
+     * @return mixed
+     */
+    protected function calculateMargins(Mage_Catalog_Model_Product $_product)
+    {
+        $aReturn = [];
+        $_collection = Mage::getResourceModel('sales/order_item_collection')
+                           ->addAttributeToFilter('product_id', ['eq' => $_product->getId()])
+        ;
+        $_collection->addFieldToSelect('product_id');
         $aCustomColumns = [
-            $this->salePriceInclTax . ' - (' . $this->totalQty . ' * ' . $this->purchasePrice . ') as margin_eur',
-            $this->margin_percentage_excl_tax . ' as margin_percentage_excl_tax',
-            '100 - ((' . $this->purchasePrice . ' / ' . $this->salePriceInclTax . ') * 100) as margin_percentage_incl_tax',
-            $this->salePriceInclTax . ' - ' . $this->purchasePrice . ' as margin_incl_eur',
-            $this->salePriceExclTax . ' - ' . $this->purchasePrice . ' as margin_excl_eur',
+            $this->salePriceExclTax . ' as revenue_excl_tax',
+            $this->salePriceInclTax . ' as revenue_incl_tax',
+            $this->totalQty . ' as total_qty',
+            $this->avgSalePrice . ' as avg_sale_price',
+            $this->salePriceInclTax . ' - (' . $this->totalQty . ' * ' . $_product->getMarginsPurchasePrice() . ') as margin_eur',
+            '100 - ((' . $_product->getMarginsPurchasePrice() . ' / ' . $this->salePriceExclTax . ') * 100) as percentage_excl_tax',
+            '100 - ((SUM(main_table.qty_ordered) * ' . $_product->getMarginsPurchasePrice() . ' / ' . $this->salePriceInclTax . ') * 100) as percentage_incl_tax',
+            $this->salePriceInclTax . ' - ' . $_product->getMarginsPurchasePrice() . ' as margin_incl_tax',
+            $this->salePriceExclTax . ' - ' . $_product->getMarginsPurchasePrice() . ' as margin_excl_tax',
         ];
         $sCustomColumns = implode(',', $aCustomColumns);
-        $_collection->getSelect()
-                    ->columns($sCustomColumns)
-        ;
-        Mage::log('sql = ' . $_collection->getSelect()
-                                         ->__toString(), null, 'gracious.log');
-        foreach ($_collection as $_item) {
-
-            $_product = Mage::getModel('catalog/product')->load($_item->getId());
-
-            foreach($this->attributesToSet as $_attribute)  {
-                $functionaName = $this->underscoreToCamelCase($_attribute, true);
-                $setFunctionName = 'set' . $functionaName;
-                $getFunctionName = 'get' . $functionaName;
-                $_product->$setFunctionName($_item->$getFunctionName());
-                $_product->getResource()
-                         ->saveAttribute($_product, $_attribute)
-                ;
-
-                Mage::log($getFunctionName . ' = ' . $_product->$getFunctionName(), null, 'gracious.log');
-
-
-            }
-
-
+        $_collection->getSelect()->columns($sCustomColumns);
+        $_collection->getSelect()->group('product_id');
+        $_item = $_collection->getFirstItem();
+        if($_item)  {
+            $aReturn = $_item->getData();
         }
+        return $aReturn;
+
     }
 
     /**

@@ -28,4 +28,17 @@ class GraciousStudios_Margins_Adminhtml_MarginsbackendController extends Mage_Ad
         $this->getResponse()->setBody($this->getLayout()->createBlock('margins/adminhtml_sales_margins_grid')->toHtml());
     }
 
+    public function refreshAction() {
+        Mage::log(__METHOD__, null, 'gracious.log');
+        try{
+            $_margin = Mage::getModel('margins/margins')->generate();
+            Mage::getSingleton('core/session')->addSuccess('Margins regenerated successfully');
+        }catch(Exception $e)    {
+            Mage::getSingleton('core/session')->addError($e->getMessage());
+
+        }
+        $this->_redirect('*/*/index');
+
+    }
+
 }

@@ -21,9 +21,17 @@
                 <class>GraciousStudios_Margins_Model</class>
                 <resourceModel>margins_mysql4</resourceModel>
             </margins>
+            <margins_mysql4>
+                <class>GraciousStudios_Margins_Model_Mysql4</class>
+                <entities>
+                    <margins>
+                        <table>gs_margins</table>
+                    </margins>
+                </entities>
+            </margins_mysql4>
         </models>
         <resources>
-            <graciousstudios_margins_setup>
+            <margins_setup>
                 <setup>
                     <module>GraciousStudios_Margins</module>
                     <class>Mage_Eav_Model_Entity_Setup</class>
@@ -31,17 +39,17 @@
                 <connection>
                     <use>core_setup</use>
                 </connection>
-            </graciousstudios_margins_setup>
-            <graciousstudios_margins_write>
+            </margins_setup>
+            <margins_write>
                 <connection>
                     <use>core_write</use>
                 </connection>
-            </graciousstudios_margins_write>
-            <graciousstudios_margins_read>
+            </margins_write>
+            <margins_read>
                 <connection>
                     <use>core_read</use>
                 </connection>
-            </graciousstudios_margins_read>
+            </margins_read>
         </resources>
     </global>
     <admin>
@@ -104,16 +112,16 @@
             </updates>
         </layout>
     </adminhtml>
-    <!--<crontab>-->
-        <!--<jobs>-->
-            <!--<margins_generate>-->
-                <!--<schedule>-->
-                    <!--<cron_expr>0 * * * *</cron_expr>-->
-                <!--</schedule>-->
-                <!--<run>-->
-                    <!--<model>margins/margins::generate</model>-->
-                <!--</run>-->
-            <!--</margins_generate>-->
-        <!--</jobs>-->
-    <!--</crontab>-->
+    <crontab>
+        <jobs>
+            <gracefulmargins_generate>
+                <schedule>
+                    <cron_expr>0 * * * *</cron_expr>
+                </schedule>
+                <run>
+                    <model>margins/margins::generate</model>
+                </run>
+            </gracefulmargins_generate>
+        </jobs>
+    </crontab>
 </config> 

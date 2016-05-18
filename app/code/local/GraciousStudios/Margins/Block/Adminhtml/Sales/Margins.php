@@ -11,5 +11,9 @@ class GraciousStudios_Margins_Block_Adminhtml_Sales_Margins extends Mage_Adminht
 
         parent::__construct();
         $this->_removeButton('add');
+        $this->_addButton('module_controller', [
+            'label'   => $this->__('Refresh'),
+            'onclick' => "setLocation('{$this->getUrl('*/*/refresh')}')",
+        ]);
     }
 }
