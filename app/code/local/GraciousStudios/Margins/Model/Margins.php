@@ -36,31 +36,29 @@ class GraciousStudios_Margins_Model_Margins extends Mage_Core_Model_Abstract
                            ->addAttributeToSelect(['name', 'margins_purchase_price'], 'inner')
         ;
         foreach ($_collection as $_item) {
-            $_product = Mage::getModel('catalog/product')
-                            ->load($_item->getId())
-            ;
-            $_margin = Mage::getModel('margins/margins')
-                           ->load($_product->getId(), 'product_id')
-            ;
+            $_product = Mage::getModel('catalog/product')->load($_item->getId());
+            $_margin = Mage::getModel('margins/margins')->load($_product->getId(), 'product_id');
             $aMargins = $this->calculateMargins($_product);
-            if (!$_margin->getId()) {
-                $_margin->setData($aMargins);
-                $_margin->setSku($_product->getSku());
-                $_margin->setName($_product->getName());
-                $_margin->setPurchasePrice($_product->getMarginsPurchasePrice());
-                $_margin->setCreatedAt($this->startDate);
-                $_margin->setUpdatedAt($this->startDate);
+            if(!empty($aMargins))   {
+                if (!$_margin->getId()) {
+                    $_margin->setData($aMargins);
+                    $_margin->setSku($_product->getSku());
+                    $_margin->setName($_product->getName());
+                    $_margin->setPurchasePrice($_product->getMarginsPurchasePrice());
+                    $_margin->setCreatedAt($this->startDate);
+                    $_margin->setUpdatedAt($this->startDate);
+                }
+                else {
+                    $_id = $_margin->getId();
+                    $_margin->setData($aMargins);
+                    $_margin->setSku($_product->getSku());
+                    $_margin->setName($_product->getName());
+                    $_margin->setPurchasePrice($_product->getMarginsPurchasePrice());
+                    $_margin->setUpdatedAt($this->startDate);
+                    $_margin->setId($_id);
+                }
+                $_margin->save();
             }
-            else {
-                $_id = $_margin->getId();
-                $_margin->setData($aMargins);
-                $_margin->setSku($_product->getSku());
-                $_margin->setName($_product->getName());
-                $_margin->setPurchasePrice($_product->getMarginsPurchasePrice());
-                $_margin->setUpdatedAt($this->startDate);
-                $_margin->setId($_id);
-            }
-            $_margin->save();
         }
     }
 
@@ -92,7 +90,7 @@ class GraciousStudios_Margins_Model_Margins extends Mage_Core_Model_Abstract
         $_collection->getSelect()->group('product_id');
         Mage::log('sql = ' . $_collection->getSelect()->__toString(), null, 'gracious.log');
         $_item = $_collection->getFirstItem();
-        if($_item)  {
+        if($_item && !empty($_item->getRevenueInclTax()))  {
             $aReturn = $_item->getData();
         }
         return $aReturn;
