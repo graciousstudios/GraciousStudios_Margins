@@ -2,20 +2,74 @@
 <config>
     <modules>
         <GraciousStudios_Margins>
-            <version>0.1.0</version>
+            <version>0.1.3</version>
         </GraciousStudios_Margins>
     </modules>
     <global>
-        <helpers>
-            <margins>
-                <class>GraciousStudios_Margins_Helper</class>
-            </margins>
-        </helpers>
         <blocks>
             <margins>
                 <class>GraciousStudios_Margins_Block</class>
             </margins>
         </blocks>
+        <events>
+            <sales_quote_item_set_product>
+                <observers>
+                    <margins_add_cost_to_quote>
+                        <class>GraciousStudios_Margins_Model_Observer</class>
+                        <method>addCostToQuote</method>
+                    </margins_add_cost_to_quote>
+                </observers>
+            </sales_quote_item_set_product>
+            <checkout_type_onepage_save_order>
+                <observers>
+                    <margins_add_margins_to_order>
+                        <class>GraciousStudios_Margins_Model_Observer</class>
+                        <method>addMarginsToOrder</method>
+                    </margins_add_margins_to_order>
+                </observers>
+            </checkout_type_onepage_save_order>
+        </events>
+        <fieldsets>
+            <sales_convert_quote_item>
+                <cost>
+                    <to_order_item>*</to_order_item>
+                </cost>
+                <!--<revenue_excl_tax>-->
+                    <!--<to_order_item>*</to_order_item>-->
+                <!--</revenue_excl_tax>-->
+                <!--<revenue_incl_tax>-->
+                    <!--<to_order_item>*</to_order_item>-->
+                <!--</revenue_incl_tax>-->
+                <!--<margin_incl_tax>-->
+                    <!--<to_order_item>*</to_order_item>-->
+                <!--</margin_incl_tax>-->
+                <!--<margin_excl_tax>-->
+                    <!--<to_order_item>*</to_order_item>-->
+                <!--</margin_excl_tax>-->
+            </sales_convert_quote_item>
+            <sales_convert_order_item>
+                <cost>
+                    <to_quote_item>*</to_quote_item>
+                </cost>
+                <!--<revenue_excl_tax>-->
+                    <!--<to_quote_item>*</to_quote_item>-->
+                <!--</revenue_excl_tax>-->
+                <!--<revenue_incl_tax>-->
+                    <!--<to_quote_item>*</to_quote_item>-->
+                <!--</revenue_incl_tax>-->
+                <!--<margin_incl_tax>-->
+                    <!--<to_quote_item>*</to_quote_item>-->
+                <!--</margin_incl_tax>-->
+                <!--<margin_excl_tax>-->
+                    <!--<to_quote_item>*</to_quote_item>-->
+                <!--</margin_excl_tax>-->
+            </sales_convert_order_item>
+        </fieldsets>
+        <helpers>
+            <margins>
+                <class>GraciousStudios_Margins_Helper</class>
+            </margins>
+        </helpers>
         <models>
             <margins>
                 <class>GraciousStudios_Margins_Model</class>

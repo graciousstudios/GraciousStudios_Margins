@@ -2,19 +2,22 @@
 $installer = $this;
 $installer->startSetup();
 
-//-------- margins_purchase_price
-//-------- margins_revenue_excl_tax
-//-------- margins_revenue_incl_tax
-//-------- margins_margin_eur
-//-------- margins_total_qty
-//-------- margins_avg_sale_price
-//-------- margins_tax_amount
-//-------- margins_percentage_excl_tax
-//margins_percentage_incl_tax
-//margins_incl_eur
-//margins_excl_eur
+$installer->run("
+    ALTER TABLE {$installer->getTable('sales/quote_item')} DROP COLUMN `cost`;
+    ALTER TABLE {$installer->getTable('sales/quote_item')} DROP COLUMN `revenue_excl_tax`;
+    ALTER TABLE {$installer->getTable('sales/quote_item')} DROP COLUMN `revenue_incl_tax`;
+    ALTER TABLE {$installer->getTable('sales/quote_item')} DROP COLUMN `margin_incl_tax`;
+    ALTER TABLE {$installer->getTable('sales/quote_item')} DROP COLUMN `margin_excl_tax`;
+    
+    ALTER TABLE {$installer->getTable('sales/order_item')} DROP COLUMN `cost`;
+    ALTER TABLE {$installer->getTable('sales/order_item')} DROP COLUMN `revenue_excl_tax`;
+    ALTER TABLE {$installer->getTable('sales/order_item')} DROP COLUMN `revenue_incl_tax`;
+    ALTER TABLE {$installer->getTable('sales/order_item')} DROP COLUMN `margin_incl_tax`;
+    ALTER TABLE {$installer->getTable('sales/order_item')} DROP COLUMN `margin_excl_tax`;
+    "
+);
 
-$installer->addAttribute('catalog_product', 'margins_purchase_price', [
+$installer->addAttribute('catalog_product', 'cost', [
     'default'          => '',
     'frontend'         => '',
     'class'            => '',
@@ -34,8 +37,9 @@ $installer->addAttribute('catalog_product', 'margins_purchase_price', [
     'unique'           => false,
 ]);
 
+//$installer->run("DROP TABLE IF EXISTS {$installer->getTable('gs_margins')};");
+
 $installer->run("
-    DROP TABLE IF EXISTS {$installer->getTable('gs_margins')};
     CREATE TABLE {$installer->getTable('gs_margins')} (
         `entity_id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
         `product_id` INT(10) UNSIGNED NOT NULL,
@@ -57,7 +61,6 @@ $installer->run("
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
     ALTER TABLE {$installer->getTable('gs_margins')} ADD INDEX `gs_margins_product_id` (`product_id`);
 ");
-$installer->setConfigData('gracefuldeals/configuration/enabled', 1);
 
+$installer->setConfigData('gracefuldeals/configuration/enabled', 1);
 $installer->endSetup();
-			 

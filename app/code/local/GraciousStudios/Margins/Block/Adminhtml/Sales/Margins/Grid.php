@@ -10,7 +10,7 @@ class GraciousStudios_Margins_Block_Adminhtml_Sales_Margins_Grid extends Mage_Ad
     {
         parent::__construct();
         $this->setId('margins_grid');
-        $this->setDefaultSort('increment_id');
+        $this->setDefaultSort('product_id');
         $this->setDefaultDir('DESC');
         $this->setSaveParametersInSession(true);
         $this->setUseAjax(true);
@@ -21,7 +21,23 @@ class GraciousStudios_Margins_Block_Adminhtml_Sales_Margins_Grid extends Mage_Ad
      */
     protected function _prepareCollection()
     {
-        $_collection = Mage::getModel('margins/margins')->getCollection();
+        /* @var $_collection Mage_Sales_Model_Resource_Order_Item_Collection */
+        $_collection = Mage::getModel('sales/order_item')
+            ->getCollection()
+            ->addFieldToFilter('cost', ['notnull' => true])
+        ;
+        $_collection->getSelect()
+            ->columns('SUM(qty_ordered) AS qty')
+            ->columns('AVG(margin_incl_tax) as avg_margin_incl_tax')
+            ->columns('AVG(margin_excl_tax) as avg_margin_excl_tax')
+            ->columns('AVG(margin_percentage_incl_tax) as avg_margin_percentage_incl_tax')
+            ->columns('AVG(margin_percentage_excl_tax) as avg_margin_percentage_excl_tax')
+            ->columns('AVG(cost) as avg_cost')
+            ->group('product_id')
+        ;
+
+        Mage::log('sql = ' . $_collection->getSelect()->__toString(), null, 'gracious.log');
+
         $this->setCollection($_collection);
         parent::_prepareCollection();
         return $this;
@@ -38,87 +54,86 @@ class GraciousStudios_Margins_Block_Adminhtml_Sales_Margins_Grid extends Mage_Ad
         // Set currency to be used in price columns
         $currency = (string)Mage::getStoreConfig(Mage_Directory_Model_Currency::XML_PATH_CURRENCY_BASE);
         // Start setting all the columns
-        $this->addColumn('entity_id', [
+        $this->addColumn('product_id', [
             'header' => $helper->__('Product ID'),
-            'index'  => 'entity_id',
+            'index'  => 'product_id',
             'width'  => '50px',
         ]);
+        
         $this->addColumn('name', [
             'header' => $helper->__('Product Name'),
             'index'  => 'name',
             'width'  => '200px',
         ]);
-        $this->addColumn('purchase_price', [
-            'header'        => $helper->__('Purchase Price'),
-            'index'         => 'purchase_price',
+
+        $this->addColumn('avg_cost', [
+            'header'        => $helper->__('Average Purchase Price'),
+            'index'         => 'avg_cost',
             'type'          => 'currency',
             'currency_code' => $currency,
             'width'         => '50px',
+            'filter'        => false,
         ]);
-        $this->addColumn('avg_sale_price', [
-            'header'         => $helper->__('Average Sale Price'),
-            'index'          => 'avg_sale_price',
-            'type'           => 'currency',
-            'currency_code'  => $currency,
-            'width'          => '50px',
-        ]);
-        $this->addColumn('tax_amount', [
-            'header'        => $helper->__('Tax Amount'),
-            'index'         => 'tax_amount',
+
+        $this->addColumn('avg_margin_incl_tax', [
+            'header'        => $helper->__('Average Margin Incl Tax'),
+            'index'         => 'avg_margin_incl_tax',
             'type'          => 'currency',
             'currency_code' => $currency,
             'width'         => '50px',
+            'filter'        => false,
         ]);
+        $this->addColumn('avg_margin_excl_tax', [
+            'header'        => $helper->__('Average Margin Excl Tax'),
+            'index'         => 'avg_margin_incl_tax',
+            'type'          => 'currency',
+            'currency_code' => $currency,
+            'width'         => '50px',
+            'filter'        => false,
+        ]);
+
+        $this->addColumn('avg_margin_percentage_incl_tax', [
+            'header'        => $helper->__('Average Margin Percentage Incl Tax'),
+            'index'         => 'avg_margin_percentage_incl_tax',
+            'type'          => 'number',
+            'width'         => '50px',
+            'filter'        => false,
+        ]);
+
+        $this->addColumn('avg_margin_percentage_excl_tax', [
+            'header'        => $helper->__('Average Margin Percentage Excl Tax'),
+            'index'         => 'avg_margin_percentage_excl_tax',
+            'type'          => 'number',
+            'width'         => '50px',
+            'filter'        => false,
+        ]);
+
         $this->addColumn('total_qty', [
             'header' => $helper->__('Total Sold'),
-            'index'  => 'total_qty',
+            'index'  => 'qty',
             'width'  => '50px',
-            'type'     => 'number',
+            'type'   => 'number',
+            'filter' => false,
         ]);
-        $this->addColumn('revenue_excl_tax', [
-            'header'        => $helper->__('Revenue Excl Tax'),
-            'index'         => 'revenue_excl_tax',
-            'type'          => 'currency',
-            'currency_code' => $currency,
-            'width'         => '50px',
-        ]);
-        $this->addColumn('revenue_incl_tax', [
-            'header'        => $helper->__('Revenue Incl Tax'),
-            'index'         => 'revenue_incl_tax',
-            'type'          => 'currency',
-            'currency_code' => $currency,
-            'width'         => '50px',
-        ]);
-        $this->addColumn('percentage_excl_tax', [
-            'header'   => $helper->__('Margin Excl Tax') . ' %',
-            'index'    => 'percentage_excl_tax',
-            'renderer' => 'margins/adminhtml_sales_margins_renderer_percentage',
-            'width'    => '50px',
-            'type'     => 'number',
-        ]);
-        $this->addColumn('percentage_incl_tax', [
-            'header'   => $helper->__('Margin Incl Tax') . ' %',
-            'index'    => 'percentage_incl_tax',
-            'renderer' => 'margins/adminhtml_sales_margins_renderer_percentage',
-            'width'    => '50px',
-            'type'     => 'number',
 
+        $this->addColumn('action', [
+            'header'    => Mage::helper('backup')->__('Action'),
+            'width'     => '50px',
+            'type'      => 'action',
+            'getter'    => 'getProductId',
+            'actions'   => [
+                [
+                    'caption' => Mage::helper('sales')->__('View'),
+                    'url'     => ['base' => '*/*/view'],
+                    'field'   => 'product_id',
+                ],
+            ],
+            'filter'    => false,
+            'sortable'  => false,
+            'index'     => 'stores',
+            'is_system' => true,
         ]);
-        $this->addColumn('margin_incl_tax', [
-            'header'        => $helper->__('Margin Incl Tax') . ' EUR',
-            'index'         => 'margin_incl_tax',
-            'type'          => 'currency',
-            'currency_code' => $currency,
-            'width'         => '50px',
-
-        ]);
-        $this->addColumn('margin_excl_tax', [
-            'header'        => $helper->__('Margin Excl Tax') . ' ' . $currency,
-            'index'         => 'margin_excl_tax',
-            'type'          => 'currency',
-            'currency_code' => $currency,
-            'width'         => '50px',
-        ]);
+//        $this->addExportType('*/*/exportProductMarginsCsv', $this->__('CSV'));
         return parent::_prepareColumns();
     }
 
@@ -131,7 +146,7 @@ class GraciousStudios_Margins_Block_Adminhtml_Sales_Margins_Grid extends Mage_Ad
     protected function _sortOrderCallback($collection, $column)
     {
         $collection->getSelect()
-                   ->order($column->getIndex() . ' ' . strtoupper($column->getDir()))
+            ->order($column->getIndex() . ' ' . strtoupper($column->getDir()))
         ;
     }
 
