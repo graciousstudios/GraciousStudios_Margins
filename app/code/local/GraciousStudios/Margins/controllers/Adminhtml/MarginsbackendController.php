@@ -41,9 +41,6 @@ class GraciousStudios_Margins_Adminhtml_MarginsbackendController extends Mage_Ad
     }
 
     public function viewAction()    {
-//        Mage::log(str_repeat('-', 20), null, 'gracious.log');
-//        Mage::log(__METHOD__, null, 'gracious.log');
-//        Mage::log('array = ' . print_r($this->getRequest()->getParams(), true), null, 'gracious.log');
 
         $this->_title($this->__('Margins'))->_title($this->__('Product'))->_title($this->__('View'));
 
