@@ -34,35 +34,11 @@
                 <cost>
                     <to_order_item>*</to_order_item>
                 </cost>
-                <!--<revenue_excl_tax>-->
-                    <!--<to_order_item>*</to_order_item>-->
-                <!--</revenue_excl_tax>-->
-                <!--<revenue_incl_tax>-->
-                    <!--<to_order_item>*</to_order_item>-->
-                <!--</revenue_incl_tax>-->
-                <!--<margin_incl_tax>-->
-                    <!--<to_order_item>*</to_order_item>-->
-                <!--</margin_incl_tax>-->
-                <!--<margin_excl_tax>-->
-                    <!--<to_order_item>*</to_order_item>-->
-                <!--</margin_excl_tax>-->
             </sales_convert_quote_item>
             <sales_convert_order_item>
                 <cost>
                     <to_quote_item>*</to_quote_item>
                 </cost>
-                <!--<revenue_excl_tax>-->
-                    <!--<to_quote_item>*</to_quote_item>-->
-                <!--</revenue_excl_tax>-->
-                <!--<revenue_incl_tax>-->
-                    <!--<to_quote_item>*</to_quote_item>-->
-                <!--</revenue_incl_tax>-->
-                <!--<margin_incl_tax>-->
-                    <!--<to_quote_item>*</to_quote_item>-->
-                <!--</margin_incl_tax>-->
-                <!--<margin_excl_tax>-->
-                    <!--<to_quote_item>*</to_quote_item>-->
-                <!--</margin_excl_tax>-->
             </sales_convert_order_item>
         </fieldsets>
         <helpers>
@@ -83,6 +59,11 @@
                     </margins>
                 </entities>
             </margins_mysql4>
+            <sales_resource>
+                <rewrite>
+                    <order_item_collection>GraciousStudios_Margins_Model_Resource_Order_Item_Collection</order_item_collection>
+                </rewrite>
+            </sales_resource>
         </models>
         <resources>
             <margins_setup>

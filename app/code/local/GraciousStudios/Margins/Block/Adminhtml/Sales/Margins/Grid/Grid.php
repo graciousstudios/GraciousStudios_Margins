@@ -13,9 +13,9 @@ class GraciousStudios_Margins_Block_Adminhtml_Sales_Margins_Grid_Grid extends Ma
         $this->setDefaultSort('product_id');
         $this->setDefaultDir('DESC');
         $this->setSaveParametersInSession(true);
-        $this->setUseAjax(true);
-        $this->setFilterVisibility(false);
-        $this->setPagerVisibility(false);
+        $this->setUseAjax(false);
+//        $this->setFilterVisibility(false);
+//        $this->setPagerVisibility(false);
 
     }
 
@@ -78,9 +78,9 @@ class GraciousStudios_Margins_Block_Adminhtml_Sales_Margins_Grid_Grid extends Ma
                 ->columns('AVG(margin_percentage_excl_tax) AS avg_margin_percentage_excl_tax')
                 ->columns('AVG(cost) AS avg_cost')
                 ->columns('SUM(qty_ordered) AS qty')
-//                ->group('product_id')
+                ->group('product_id')
                 ->group($groupBy)
-                ->group('name')
+//                ->group('name')
                 ->order('created_at DESC')
             ;
             Mage::log('sql = ' . $_collection->getSelect()->__toString(), null, 'gracious.log');
