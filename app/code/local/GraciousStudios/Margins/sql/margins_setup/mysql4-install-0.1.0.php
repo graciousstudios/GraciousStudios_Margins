@@ -2,13 +2,13 @@
 $installer = $this;
 $installer->startSetup();
 
-$installer->run("
 //    ALTER TABLE {$installer->getTable('sales/quote_item')} DROP COLUMN `cost`;
 //    ALTER TABLE {$installer->getTable('sales/quote_item')} DROP COLUMN `revenue_excl_tax`;
 //    ALTER TABLE {$installer->getTable('sales/quote_item')} DROP COLUMN `revenue_incl_tax`;
 //    ALTER TABLE {$installer->getTable('sales/quote_item')} DROP COLUMN `margin_incl_tax`;
 //    ALTER TABLE {$installer->getTable('sales/quote_item')} DROP COLUMN `margin_excl_tax`;
-//
+
+$installer->run("
     ALTER TABLE {$installer->getTable('sales/order_item')} DROP COLUMN `cost`;
     ALTER TABLE {$installer->getTable('sales/order_item')} DROP COLUMN `revenue_excl_tax`;
     ALTER TABLE {$installer->getTable('sales/order_item')} DROP COLUMN `revenue_incl_tax`;
