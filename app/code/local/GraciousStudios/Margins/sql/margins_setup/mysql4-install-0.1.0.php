@@ -2,20 +2,18 @@
 $installer = $this;
 $installer->startSetup();
 
-//    ALTER TABLE {$installer->getTable('sales/quote_item')} DROP COLUMN `cost`;
-//    ALTER TABLE {$installer->getTable('sales/quote_item')} DROP COLUMN `revenue_excl_tax`;
-//    ALTER TABLE {$installer->getTable('sales/quote_item')} DROP COLUMN `revenue_incl_tax`;
-//    ALTER TABLE {$installer->getTable('sales/quote_item')} DROP COLUMN `margin_incl_tax`;
-//    ALTER TABLE {$installer->getTable('sales/quote_item')} DROP COLUMN `margin_excl_tax`;
-
-$installer->run("
-    ALTER TABLE {$installer->getTable('sales/order_item')} DROP COLUMN `cost`;
-    ALTER TABLE {$installer->getTable('sales/order_item')} DROP COLUMN `revenue_excl_tax`;
-    ALTER TABLE {$installer->getTable('sales/order_item')} DROP COLUMN `revenue_incl_tax`;
-    ALTER TABLE {$installer->getTable('sales/order_item')} DROP COLUMN `margin_incl_tax`;
-    ALTER TABLE {$installer->getTable('sales/order_item')} DROP COLUMN `margin_excl_tax`;
-    "
-);
+//      ALTER TABLE `sales_flat_quote_item` DROP COLUMN `cost`;
+//      ALTER TABLE `sales_flat_quote_item` DROP COLUMN `revenue_excl_tax`;
+//      ALTER TABLE `sales_flat_quote_item` DROP COLUMN `revenue_incl_tax`;
+//      ALTER TABLE `sales_flat_quote_item` DROP COLUMN `margin_incl_tax`;
+//      ALTER TABLE `sales_flat_quote_item` DROP COLUMN `margin_excl_tax`;
+//      ALTER TABLE `sales_flat_order_item` DROP COLUMN `cost`;
+//      ALTER TABLE `sales_flat_order_item` DROP COLUMN `revenue_excl_tax`;
+//      ALTER TABLE `sales_flat_order_item` DROP COLUMN `revenue_incl_tax`;
+//      ALTER TABLE `sales_flat_order_item` DROP COLUMN `margin_incl_tax`;
+//      ALTER TABLE `sales_flat_order_item` DROP COLUMN `margin_excl_tax`;
+//      ALTER TABLE `sales_flat_order_item` DROP COLUMN `margin_percentage_excl_tax`;
+//      ALTER TABLE `sales_flat_order_item` DROP COLUMN `margin_percentage_incl_tax`;
 
 $installer->addAttribute('catalog_product', 'cost', [
     'default'          => '',
