@@ -16,7 +16,7 @@ class GraciousStudios_Margins_Block_Adminhtml_Sales_Margins_Formcontainer extend
 
     public function getHeaderText()
     {
-        return Mage::helper('core')->__('My Form Container');
+        return Mage::helper('core')->__('Product Margins');
     }
 
 }

@@ -10,12 +10,10 @@ class GraciousStudios_Margins_Block_Adminhtml_Sales_Margins_Grid_Grid extends Ma
     {
         parent::__construct();
         $this->setId('margins_view_grid');
-        $this->setDefaultSort('product_id');
+        $this->setDefaultSort('created_at');
         $this->setDefaultDir('DESC');
         $this->setSaveParametersInSession(true);
         $this->setUseAjax(false);
-//        $this->setFilterVisibility(false);
-//        $this->setPagerVisibility(false);
 
     }
 
@@ -29,12 +27,14 @@ class GraciousStudios_Margins_Block_Adminhtml_Sales_Margins_Grid_Grid extends Ma
         Mage::log('array = ' . print_r($this->getRequest()->getParams(), true), null, 'gracious.log');
         $productId = $this->getRequest()->getParam('product_id');
 
-        $from = $this->getLocale()->date($this->getRequest()->getParam('from'), Zend_Date::DATE_SHORT, null, false)->toString(Varien_Date::DATETIME_INTERNAL_FORMAT);
-        /* @var $toDate Zend_Date */
-        $toDate = $this->getLocale()->date($this->getRequest()->getParam('to'), Zend_Date::DATE_SHORT, null, false);
-        $toDate->setHour(23)->setMinute(59)->setSecond(59);
-        Mage::log('$toDate = ' . get_class($toDate), null, 'gracious.log');
-        $to = $toDate->toString(Varien_Date::DATETIME_INTERNAL_FORMAT);
+//        $from = date('Y-m-d H:i:s', Mage::getModel('core/date')->timestamp(strtotime($this->getRequest()->getParam('from'))));
+//        $to = date('Y-m-d H:i:s', Mage::getModel('core/date')->timestamp(strtotime($this->getRequest()->getParam('to'))));
+
+        $from = new Zend_date(Mage::getModel('core/date')->timestamp(strtotime($this->getRequest()->getParam('from'))));
+        $from->setHour(0)->setMinute(0)->setSecond(0)->toString(Varien_Date::DATETIME_INTERNAL_FORMAT);
+
+        $to = new Zend_date(Mage::getModel('core/date')->timestamp(strtotime($this->getRequest()->getParam('to'))));
+        $to->setHour(0)->setMinute(0)->setSecond(0)->addDay(1)->toString(Varien_Date::DATETIME_INTERNAL_FORMAT);
         $period_type = $this->getRequest()->getParam('period_type');
 
         // Set the correct groupBy according to which period_type as chosen
@@ -171,7 +171,7 @@ class GraciousStudios_Margins_Block_Adminhtml_Sales_Margins_Grid_Grid extends Ma
     // Used for AJAX loading
     public function getGridUrl()
     {
-        return $this->getUrl('*/*/grid', ['_current' => true]);
+        return $this->getUrl('*/*/view', ['_current' => true]);
     }
 
     protected function _sortOrderCallback($collection, $column)

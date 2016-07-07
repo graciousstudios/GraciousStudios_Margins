@@ -7,11 +7,11 @@ class GraciousStudios_Margins_Block_Adminhtml_Sales_Margins_Form_Edit_Form exten
     {
         Mage::log(__METHOD__, null, 'gracious.log');
         Mage::log('params = ' . print_r($this->getRequest()->getParams(), true), null, 'gracious.log');
-        $dateFormatIso = Mage::app()->getLocale()->getDateFormat(Mage_Core_Model_Locale::FORMAT_TYPE_SHORT);
+        $dateFormatIso = Mage::app()->getLocale()->getDateFormat(Mage_Core_Model_Locale::FORMAT_TYPE_MEDIUM);
         $form = new Varien_Data_Form([
             'id'     => 'edit_form',
             'action' => $this->getUrl('*/*/view', ['product_id' => $this->getRequest()->getParam('product_id')]),
-            'method' => 'post',
+            'method' => 'get',
         ]);
         $fieldset = $form->addFieldset('base_fieldset', ['legend' => Mage::helper('reports')->__('Filter')]);
         $htmlIdPrefix = 'margins_view_';

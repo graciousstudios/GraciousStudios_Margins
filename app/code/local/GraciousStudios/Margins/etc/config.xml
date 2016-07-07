@@ -47,18 +47,18 @@
             </margins>
         </helpers>
         <models>
-            <margins>
-                <class>GraciousStudios_Margins_Model</class>
-                <resourceModel>margins_mysql4</resourceModel>
-            </margins>
-            <margins_mysql4>
-                <class>GraciousStudios_Margins_Model_Mysql4</class>
-                <entities>
-                    <margins>
-                        <table>gs_margins</table>
-                    </margins>
-                </entities>
-            </margins_mysql4>
+            <!--<margins>-->
+                <!--<class>GraciousStudios_Margins_Model</class>-->
+                <!--<resourceModel>margins_mysql4</resourceModel>-->
+            <!--</margins>-->
+            <!--<margins_mysql4>-->
+                <!--<class>GraciousStudios_Margins_Model_Mysql4</class>-->
+                <!--<entities>-->
+                    <!--<margins>-->
+                        <!--<table>gs_margins</table>-->
+                    <!--</margins>-->
+                <!--</entities>-->
+            <!--</margins_mysql4>-->
             <sales_resource>
                 <rewrite>
                     <order_item_collection>GraciousStudios_Margins_Model_Resource_Order_Item_Collection</order_item_collection>
@@ -147,16 +147,16 @@
             </updates>
         </layout>
     </adminhtml>
-    <crontab>
-        <jobs>
-            <gracefulmargins_generate>
-                <schedule>
-                    <cron_expr>0 * * * *</cron_expr>
-                </schedule>
-                <run>
-                    <model>margins/margins::generate</model>
-                </run>
-            </gracefulmargins_generate>
-        </jobs>
-    </crontab>
+    <!--<crontab>-->
+        <!--<jobs>-->
+            <!--<gracefulmargins_generate>-->
+                <!--<schedule>-->
+                    <!--<cron_expr>0 * * * *</cron_expr>-->
+                <!--</schedule>-->
+                <!--<run>-->
+                    <!--<model>margins/margins::generate</model>-->
+                <!--</run>-->
+            <!--</gracefulmargins_generate>-->
+        <!--</jobs>-->
+    <!--</crontab>-->
 </config> 

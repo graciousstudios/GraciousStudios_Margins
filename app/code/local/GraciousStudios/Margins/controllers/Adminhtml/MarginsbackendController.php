@@ -42,6 +42,9 @@ class GraciousStudios_Margins_Adminhtml_MarginsbackendController extends Mage_Ad
 
     public function viewAction()    {
 
+        Mage::log(__METHOD__, null, 'gracious.log');
+        Mage::log('session = ' . print_r(Mage::getSingleton('adminhtml/session')->getData(), true), null, 'gracious.log');
+
         $this->_title($this->__('Margins'))->_title($this->__('Product'))->_title($this->__('View'));
 
         $this->loadLayout();
@@ -57,6 +60,21 @@ class GraciousStudios_Margins_Adminhtml_MarginsbackendController extends Mage_Ad
         $_from = $this->getRequest()->getParam('from');
         $_to = $this->getRequest()->getParam('to');
         $_periodType = $this->getRequest()->getParam('period_type');
+
+//        Mage::getSingleton('adminhtml/session')->setData('margins', [
+//            'product_id'  => $_productId,
+//            'to'          => $_to,
+//            'from'        => $_from,
+//            'period_type' => $_periodType,
+//        ]);
+//
+//        Mage::log('session = ' . print_r(Mage::getSingleton('adminhtml/session')->getData(), true), null, 'gracious.log');
+
+//        if(empty($_from) && empty($_to) && empty($_periodType)) {
+//            $_from =
+//        }
+
+
 
         if(!empty($_from) && !empty($_to) && !empty($_periodType))  {
             $gridBlock = $this->getLayout()->createBlock('margins/adminhtml_sales_margins_viewgridcontainer');
